@@ -1,0 +1,25 @@
+version: "3.8"
+services:
+  email-sender:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: email-sender
+    environment:
+      - RABBITMQ_URI=amqp://rabbitmq:5672
+    depends_on:
+      - rabbitmq
+    networks:
+      - email-network
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - email-network
+
+networks:
+  email-network:

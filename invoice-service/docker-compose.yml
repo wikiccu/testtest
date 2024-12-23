@@ -1,0 +1,42 @@
+version: "3.8"
+services:
+  invoice-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: invoice-service
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/invoices
+      - RABBITMQ_URI=amqp://rabbitmq:5672
+    depends_on:
+      - mongodb
+      - rabbitmq
+    networks:
+      - invoice-network
+
+  mongodb:
+    image: mongo:6
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - invoice-network
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - invoice-network
+
+networks:
+  invoice-network:
+
+volumes:
+  mongo_data:
