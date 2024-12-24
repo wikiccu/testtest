@@ -8,7 +8,7 @@ import { CreateInvoiceDto } from './dto/create-invoice.dto';
 export class InvoicesService {
   constructor(
     @InjectModel(Invoice.name) private invoiceModel: Model<InvoiceDocument>,
-  ) { }
+  ) {}
 
   // Create a new invoice
   async createInvoice(createInvoiceDto: CreateInvoiceDto): Promise<Invoice> {
@@ -22,12 +22,19 @@ export class InvoicesService {
   }
 
   // Get invoices, optionally filtering by date range
-  async getAllInvoices(startDate?: string, endDate?: string): Promise<Invoice[]> {
+  async getAllInvoices(
+    startDate?: string,
+    endDate?: string,
+  ): Promise<Invoice[]> {
     let filter = {};
     if (startDate || endDate) {
       const filterConditions: any = {};
       if (startDate) filterConditions.date = { $gte: new Date(startDate) };
-      if (endDate) filterConditions.date = { ...filterConditions.date, $lte: new Date(endDate) };
+      if (endDate)
+        filterConditions.date = {
+          ...filterConditions.date,
+          $lte: new Date(endDate),
+        };
       filter = filterConditions;
     }
 
@@ -41,13 +48,19 @@ export class InvoicesService {
     const endOfDay = new Date(today.setHours(23, 59, 59, 999));
 
     // Fetch all invoices for today
-    const invoices = await this.invoiceModel.find({
-      date: { $gte: startOfDay, $lte: endOfDay },
-    }).exec();
+    const invoices = await this.invoiceModel
+      .find({
+        date: { $gte: startOfDay, $lte: endOfDay },
+      })
+      .exec();
 
     // Calculate totals
-    const totalSales = invoices.reduce((sum, invoice) => sum + invoice.amount, 0);
-    const itemSummary = invoices.flatMap(invoice => invoice.items)
+    const totalSales = invoices.reduce(
+      (sum, invoice) => sum + invoice.amount,
+      0,
+    );
+    const itemSummary = invoices
+      .flatMap((invoice) => invoice.items)
       .reduce((summary, item) => {
         summary[item.sku] = (summary[item.sku] || 0) + item.qt;
         return summary;
@@ -55,14 +68,4 @@ export class InvoicesService {
 
     return { totalSales, itemSummary };
   }
-
-  // Example RabbitMQ publishing logic
-  async publishDailySalesReport(report: any) {
-    // Logic to publish report to RabbitMQ
-    console.log('Publishing report:', report);
-  }
-  // Test Get all invoices 
-  // async getAllInvoices(): Promise<Invoice[]> {
-  //   return this.invoiceModel.find().exec();
-  // }
 }
