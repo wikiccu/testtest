@@ -7,7 +7,7 @@ import { EmailService } from 'src/email/email.service';
 
 @Injectable()
 export class MessageBrokerService {
-  constructor(private readonly emailService: EmailService) {}
+  constructor(private readonly emailService: EmailService) { }
 
   @RabbitSubscribe({
     exchange: ExchangeEnum.EMAIL_SERVICE,
@@ -16,8 +16,8 @@ export class MessageBrokerService {
   })
   public async workspaceEventsHandler(message: any) {
     await this.emailService.sendEmail(
-      'taha.romany@gmail.com', //TODO: Set Env admin email
-      'email test', //TODO: Set subject
+      'privatemx.2010@gmail.com',
+      'email test',
       message.report,
     );
   }

@@ -4,7 +4,6 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { AppService } from './app.service';
 import { InvoicesModule } from './invoices/invoices.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { InvoiceCronService } from './invoice-cron/invoice-cron.service';
 
 @Module({
   imports: [
@@ -16,4 +15,4 @@ import { InvoiceCronService } from './invoice-cron/invoice-cron.service';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

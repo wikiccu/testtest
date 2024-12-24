@@ -9,7 +9,7 @@ export const createMessageBrokerConfig = (): MessageBrokerConfiguration => {
         type: 'topic',
       },
     ],
-    uri: 'amqp://localhost:5672', //TODO: set this on ENV
+    uri: 'amqp://localhost:5672',
     enableControllerDiscovery: true,
     channels: {
       'channel-1': {

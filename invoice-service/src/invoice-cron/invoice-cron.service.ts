@@ -14,7 +14,7 @@ export class InvoiceCronService {
     private readonly messageBrokerService: MessageBrokerService,
   ) {}
 
-  @Cron(CronExpression.EVERY_30_SECONDS) // Runs every day at 12:00 PM
+  @Cron(CronExpression.EVERY_DAY_AT_NOON) // Runs every day at 12:00 PM
   async handleDailySalesReport() {
     this.logger.log('Running daily sales report generation task...');
     try {
